@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "BinaryData.h"
 #include "GUI/SpreadSlider.h"
+#include "GUI/SpringsGL.h"
 
 //==============================================================================
 PluginProcessor::PluginProcessor() :
@@ -144,6 +145,7 @@ juce::AudioProcessorEditor *PluginProcessor::createEditor()
     auto builder = std::make_unique<foleys::MagicGUIBuilder>(magicState);
     builder->registerJUCEFactories();
     builder->registerFactory("SpreadSlider", &SpreadSliderItem::factory);
+    builder->registerFactory("SpringsGL", &SpringsGLItem::factory);
 
     magicState.setGuiValueTree(BinaryData::magic_xml,
                                BinaryData::magic_xmlSize);
@@ -233,6 +235,9 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     };
 
     springs_init(&m_springreverb, &sdesc, sampleRate, samplesPerBlock);
+
+    /* RMS buffer */
+    SpringsGL::setRMS(m_springreverb.rms.rms, &m_springreverb.rms.rms_id);
 
     /* populate spreads */
     auto *rands = &m_paramRands[0][0];

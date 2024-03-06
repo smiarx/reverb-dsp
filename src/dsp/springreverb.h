@@ -64,8 +64,8 @@
 
 #define RMS_BUFFER_SIZE  128
 #define RMS_BUFFER_MASK  (RMS_BUFFER_SIZE - 1)
-#define RMS_SIZE         64
-#define RMS_OVERLAP_SIZE (RMS_SIZE / 2)
+#define RMS_SIZE         32
+#define RMS_OVERLAP_SIZE (4)
 #define RMS_OVERLAP_MASK (RMS_OVERLAP_SIZE - 1)
 #define RMS_NOVERLAPS    (RMS_SIZE / RMS_OVERLAP_SIZE)
 

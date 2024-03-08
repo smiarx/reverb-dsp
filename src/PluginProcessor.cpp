@@ -236,8 +236,8 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 
     springs_init(&m_springreverb, &sdesc, sampleRate, samplesPerBlock);
 
-    /* RMS buffer */
-    SpringsGL::setRMS(m_springreverb.rms.rms, &m_springreverb.rms.rms_id);
+    /* Set springgl uniform values */
+    SpringsGL::setUniforms(m_springreverb.rms.rms, &m_springreverb.rms.rms_id, &m_springreverb.desc.length);
 
     /* populate spreads */
     auto *rands = &m_paramRands[0][0];

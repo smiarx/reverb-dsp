@@ -1,7 +1,8 @@
 #include "SpringsGL.h"
 
-springsfloat *SpringsGL::rms;
+const springsfloat *SpringsGL::rms;
 const int *SpringsGL::rmspos;
+const springsfloat *SpringsGL::length;
 
 SpringsGL::SpringsGL()
 {
@@ -24,6 +25,7 @@ SpringsGL::~SpringsGL()
 
 void SpringsGL::newOpenGLContextCreated()
 {
+    openGLContext.setSwapInterval(0);
     // Setup Shaders
     createShaders();
 
@@ -64,8 +66,8 @@ void SpringsGL::renderOpenGL()
     if (uniforms->resolution != nullptr)
         uniforms->resolution->set((GLfloat)renderingScale * getWidth(),
                                   (GLfloat)renderingScale * getHeight());
-    if (uniforms->time != nullptr)
-        uniforms->time->set((GLfloat)(++itime) / 60.f);
+    if (uniforms->length != nullptr)
+        uniforms->length->set((GLfloat*)length, MAXSPRINGS);
 
     if (uniforms->rms != nullptr)
         uniforms->rms->set((GLfloat *)&rms[0][0], RMS_BUFFER_SIZE * MAXSPRINGS);
@@ -157,3 +159,16 @@ void SpringsGL::createShaders()
     } else {
     }
 }
+
+void SpringsGLItem::update()
+{
+}
+
+std::vector<foleys::SettableProperty>
+SpringsGLItem::getSettableProperties() const
+{
+    std::vector<foleys::SettableProperty> props;
+    return props;
+}
+
+const juce::Identifier SpringsGLItem::pLengthParameter{"length"};

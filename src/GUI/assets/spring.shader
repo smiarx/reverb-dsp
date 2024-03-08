@@ -1,7 +1,7 @@
 #define PI 3.14159
 
 uniform vec2 u_resolution;
-uniform float u_time;
+uniform float u_length[MAXSPRINGS];
 uniform float u_rms[RMS_BUFFER_SIZE*MAXSPRINGS];
 uniform int u_rmspos;
 
@@ -16,11 +16,11 @@ void main() {
     int spring = int(st.y);
     st.y = fract(st.y)*2.0-1.0;
     
-    float xpos = float(RMS_BUFFER_SIZE)*(st.x+1.0)/2.0;
+    float xpos = u_length[spring] * float(RMS_BUFFER_SIZE)*(st.x+1.0)/2.0;
     int ixpos = int(xpos);
     float fxpos = xpos - float(ixpos);
-    int ixpos0 = (ixpos+u_rmspos)&(RMS_BUFFER_SIZE-1);
-    int ixpos1 = (ixpos+1+u_rmspos)&(RMS_BUFFER_SIZE-1);
+    int ixpos0 = (u_rmspos-ixpos)&(RMS_BUFFER_SIZE-1);
+    int ixpos1 = (u_rmspos-(ixpos+1))&(RMS_BUFFER_SIZE-1);
     float rms0 = u_rms[ixpos0*MAXSPRINGS+spring];
     float rms1 = u_rms[ixpos1*MAXSPRINGS+spring];
     float rms = rms0 + fxpos*(rms1 - rms0);
@@ -30,7 +30,7 @@ void main() {
     float win = pow(cos(st.x*PI/2.), 0.8);
     
     //float xshift = sin(u_time*8.)*pow((sin(u_time*1.)*.5+.5),.4)*0.1;
-    float xshift = rms * win;
+    float xshift = -rms * win;
     st.x += xshift;
     
     float th = 2.*PI*st.x*u_resolution.x*f;
